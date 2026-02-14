@@ -6,55 +6,87 @@
 <title>Be My Valentine 💖</title>
 
 <style>
-    body {
-        background: linear-gradient(to bottom, #ffd6e7, #ffeef5);
-        font-family: Arial, sans-serif;
-        text-align: center;
-        margin: 0;
-        height: 100vh;
-        overflow: hidden;
-    }
+body {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    text-align: center;
+    background: linear-gradient(-45deg,#ffd6e7,#ffe6f2,#ffcce0,#ffeaf4);
+    background-size: 400% 400%;
+    animation: bgMove 10s ease infinite;
+}
 
-    h1 {
-        margin-top: 80px;
-        color: #ff4d88;
-        font-size: 28px;
-    }
+@keyframes bgMove {
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
 
-    .buttons {
-        margin-top: 50px;
-        position: relative;
-        height: 300px;
-    }
+h1 {
+    margin-top: 80px;
+    color: #ff2e7a;
+    font-size: 30px;
+    animation: pop 1s ease;
+}
 
-    button {
-        font-size: 18px;
-        padding: 12px 25px;
-        border: none;
-        border-radius: 25px;
-        cursor: pointer;
-        position: absolute;
-        transition: 0.2s;
-    }
+@keyframes pop {
+    from {transform: scale(0.7);}
+    to {transform: scale(1);}
+}
 
-    #yesBtn {
-        background-color: #ff66a3;
-        color: white;
-        left: 30%;
-        top: 120px;
-    }
+.buttons {
+    margin-top: 40px;
+    position: relative;
+    height: 300px;
+}
 
-    #noBtn {
-        background-color: #cccccc;
-        left: 55%;
-        top: 120px;
-    }
+button {
+    font-size: 20px;
+    padding: 14px 28px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    position: absolute;
+    transition: 0.2s;
+    box-shadow: 0px 5px 12px rgba(0,0,0,0.2);
+}
 
-    #message {
-        font-size: 24px;
-        color: #ff3385;
-        margin-top: 40px;
-    }
+#yesBtn {
+    background-color: #ff4da6;
+    color: white;
+    left: 28%;
+    top: 120px;
+}
+
+#yesBtn:hover {
+    transform: scale(1.1);
+}
+
+#noBtn {
+    background-color: #dddddd;
+    left: 55%;
+    top: 120px;
+}
+
+#message {
+    font-size: 26px;
+    color: #ff2e7a;
+    margin-top: 30px;
+}
+
+/* Floating hearts */
+.heart {
+    position: fixed;
+    bottom: -20px;
+    font-size: 20px;
+    animation: floatUp linear infinite;
+}
+
+@keyframes floatUp {
+    from {transform: translateY(0); opacity: 1;}
+    to {transform: translateY(-110vh); opacity: 0;}
+}
 </style>
 </head>
 
@@ -74,24 +106,60 @@ const noBtn = document.getElementById("noBtn");
 const yesBtn = document.getElementById("yesBtn");
 const message = document.getElementById("message");
 
-// Move NO button randomly
-noBtn.addEventListener("mouseover", moveButton);
-noBtn.addEventListener("touchstart", moveButton);
+let noClicks = 0;
 
+const funnyTexts = [
+    "😝 Are you sure?",
+    "🥺 Don't break my heart...",
+    "😢 That hurts...",
+    "😳 Try again...",
+    "💔 The Yes button looks better...",
+    "😂 Nice try!"
+];
+
+// Move NO button
 function moveButton() {
-    const x = Math.random() * 60;
-    const y = Math.random() * 60;
+    const x = Math.random() * 65;
+    const y = Math.random() * 65;
     noBtn.style.left = x + "%";
     noBtn.style.top = y + "%";
+
+    message.innerHTML =
+        funnyTexts[Math.floor(Math.random() * funnyTexts.length)];
+
+    noClicks++;
+    noBtn.style.transform = "scale(" + (1 - noClicks*0.05) + ")";
 }
+
+noBtn.addEventListener("mouseover", moveButton);
+noBtn.addEventListener("touchstart", moveButton);
 
 // YES clicked
 yesBtn.addEventListener("click", () => {
     message.innerHTML =
-        "💞 Thank you! You made me the happiest man alive 💞";
+    "💞 Thank you! You just made someone very happy 💞";
+
     yesBtn.style.display = "none";
     noBtn.style.display = "none";
+
+    createHearts(40);
 });
+
+// Floating hearts continuously
+setInterval(() => createHearts(1), 400);
+
+function createHearts(num) {
+    for (let i = 0; i < num; i++) {
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.innerHTML = "❤️";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDuration = (3 + Math.random()*3) + "s";
+        document.body.appendChild(heart);
+
+        setTimeout(() => heart.remove(), 6000);
+    }
+}
 </script>
 
 </body>
